@@ -1,16 +1,17 @@
 import React from 'react'
 import * as THREE from "three"
 import { useEffect } from 'react';
+import { OrbitControls } from 'three/examples/jsm/controls/OrbitControls';
 
 let testData = {
   nodes: [
-    [2],
+    [1],
     [1, 1], 
     [1, 1, 1, 1], 
     [1, 1, 1],
-    [3, 2, 5, 78, 9, 5],
-    [1, 2],
-    [2, 4, 2, 6, 78],
+    [1, 1, 1, 1, 1, 1],
+    [1, 1],
+    [1, 1, 1, 1, 1],
   ]
 }
 
@@ -70,6 +71,10 @@ export const CubeScene = () => {
     scene.add(generateNodes(nodeMap, 50, 20))
 
     const light = new THREE.HemisphereLight( 0xffffbb, 0x080820, 1 );
+
+    const controls = new OrbitControls( camera, renderer.domElement );
+
+    
     scene.add( light );
 
     camera.position.z = 50
