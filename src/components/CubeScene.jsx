@@ -4,75 +4,89 @@ import { useEffect } from 'react';
 
 let testData = {
   nodes: [
-    [1, 1, 1, 1],
-    [1, 1, 1]
+    [2],
+    [1, 1], 
+    [1, 1, 1, 1], 
+    [1, 1, 1],
+    [3, 2, 5, 78, 9, 5],
+    [1, 2],
+    [2, 4, 2, 6, 78],
   ]
 }
+
+// TODO seperate into 2 functions: creating data, and then implimenting in three.js
+const generateNodes = (shapeArr, width, height) => {
+  let numOfLayers = shapeArr.length
+
+  let geometry = new THREE.BoxGeometry(1,1,1);
+  let material = new THREE.MeshStandardMaterial({color:0x00ff00});
+
+  const nodes = new THREE.Group();
+  for(let i = 0; i < numOfLayers; i++){
+
+    let numOfNodes = shapeArr[i].length
+    console.log("nodes in layer: ", numOfNodes);
+
+    for(let j = 0; j < numOfNodes; j++){
+      let mesh  = new THREE.Mesh(geometry, material);
+
+      // using "+1" so that the nodes are center-justified within the width and height, 
+      // as in the CSS flex rule "justify-content: space-evenly"
+      mesh.position.x = (width / (numOfLayers + 1)) * (i + 1);
+      mesh.position.y = (height / (numOfNodes + 1)) * (j + 1);
+
+      //offset so that the group has it's origin at it's geometric centre (roughly)
+      mesh.position.x = mesh.position.x - width/2 
+      mesh.position.y = mesh.position.y - height/2
+
+      nodes.add(mesh)
+    }
+  };
+
+  console.log(nodes);
+
+  return nodes
+}
+
+
 export const CubeScene = () => {
 
   useEffect(() => {
     const scene = new THREE.Scene()
-    const camera = new THREE.PerspectiveCamera( 75, window.innerWidth / window.innerHeight, 0.1, 1000 );
-
+    const camera = new THREE.PerspectiveCamera( 40, window.innerWidth / window.innerHeight, 0.1, 1000 );
     const renderer = new THREE.WebGLRenderer()
     renderer.setSize( window.innerWidth, window.innerHeight )
     document.body.appendChild( renderer.domElement )
 
-    // const geometry = new THREE.BoxGeometry(1, 1, 1)
-    // const material = new THREE.MeshStandardMaterial( { color: 0xd35a})
-    // const cube = new THREE.Mesh( geometry, material)
-    // scene.add( cube )
+    // render reference reticle
+    let geometry = new THREE.BoxGeometry(0.3, 3, 0.3);
+    let material = new THREE.MeshStandardMaterial({color: 0xFF0000});
+    let mesh  = new THREE.Mesh(geometry, material);
+    mesh.name = "testcube"
+    scene.add(mesh)
 
-    // const cubes = []
-    // for (let i = 0; i<2; i++) {
-    //   let tempColor = Math.floor(Math.random()*16777215).toString(16)
-    //   const geometry = new THREE.BoxGeometry(1, 1, 1)
-    //   const material = new THREE.MeshStandardMaterial( { color: tempColor} )
-    //   const cube = new THREE.Mesh( geometry, material)
-    //   scene.add( cube )    
-    // }
-
-
-    // const geometry = new THREE.BoxGeometry(1, 1, 1)
-    // const material = new THREE.MeshStandardMaterial( { color: tempColor} )
-
-    let xDistance = 10;
-    let zDistance = 10;
-    let geometry = new THREE.BoxGeometry(1,1,1);
-    let material = new THREE.MeshStandardMaterial({color:0x00ff44});
-
-    //initial offset so does not start in middle.
-    let xOffset = -1
-
-    for(let i = 0; i < 4; i++){
-        for(let j = 0; j < 3; j++){
-                let mesh  = new THREE.Mesh(geometry, material);
-                mesh.position.x = (xDistance * i) + xOffset;
-                mesh.position.y = (zDistance * j);
-                scene.add(mesh);
-        }
-    };
-
+    // Render nodes from test data
+    let nodeMap = testData.nodes
+    scene.add(generateNodes(nodeMap, 50, 20))
 
     const light = new THREE.HemisphereLight( 0xffffbb, 0x080820, 1 );
     scene.add( light );
 
-    camera.position.z = 100
+    camera.position.z = 50
+
     
     const animate = () => {
       requestAnimationFrame( animate )
-
-      // cube.rotation.x += 0.01;
-      // cube.rotation.y += 0.01;
-      // cube.rotation.z += 0.01;
-
-
       renderer.render( scene, camera )
     }
 
     animate()
+
+    console.log(scene);
     
   }, [])
+
+
 
   return (
     <div/>
