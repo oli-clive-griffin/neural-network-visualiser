@@ -1,10 +1,10 @@
-import { Scene } from './components/Scene';
+import { CubeScene } from './components/CubeScene';
 import './App.css';
 
 function App() {
   return (
     <div className="App">
-      <Scene/>
+      <CubeScene/>
     </div>
   );
 }
