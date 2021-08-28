@@ -72,7 +72,7 @@ export const CubeScene = () => {
 
     const light = new THREE.HemisphereLight( 0xffffbb, 0x080820, 1 );
 
-    const controls = new OrbitControls( camera, renderer.domElement );
+    const asdf = new OrbitControls( camera, renderer.domElement );
 
     
     scene.add( light );
